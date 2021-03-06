@@ -35,11 +35,6 @@ class Database:
         self._models = tuple(self._model_map.values())
         self._discord_classes = tuple(self._model_map.keys())
 
-    async def load(self, discord_obj):
-        warnings.warn("Database.load is deprecated; use Database.wrap_{} methods instead", DeprecationWarning)
-        obj, existed_already = await self._load(discord_obj)
-        return obj, existed_already
-
     async def _load(self, discord_obj, create_if_new=True):
         if isinstance(discord_obj, self._discord_classes):
             cls = self._model_map[type(discord_obj)]
