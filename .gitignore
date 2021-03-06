@@ -6,6 +6,7 @@
 /build
 /dist
 /*.egg-info
+/docs/_build
 
 # Environments
 .env
@@ -15,3 +16,4 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.vscode
