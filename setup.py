@@ -25,6 +25,7 @@ requirements = [
     "aiologger",
     "aiofiles",
     "python-dotenv",
+    "enhanced-dpy",
     "colorama; sys_platform == 'win32'",
     "uvloop; sys_platform != 'win32' and implementation_name == 'cpython'",
 ]
