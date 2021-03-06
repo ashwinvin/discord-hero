@@ -1,7 +1,7 @@
 Discord-Hero
 =============
 
-**This repo is a fork of the original `discord-hero <https://github.com/discord-hero/discord-hero>`**
+**This repo is a fork of the original `discord-hero <https://github.com/discord-hero/discord-hero>`_**
 
 discord-hero is an asynchronous, fully modular Discord bot framework that comes with
 batteries included, allowing you to write powerful `Discord <https://discordapp.com/>`_
@@ -23,8 +23,8 @@ the tools experienced developers enjoy using to build production-ready
 applications for communities, games or companies on Discord:
 
 -  a **Discord bot** built on top of
-   `discord.py <https://github.com/Rapptz/discord.py>`_
--  a **familiar asynchronous ORM** based on
+   `enhanced-dpy <https://github.com/iDutchy/discord.py>`_
+-  an **asynchronous ORM** based on
    `Django <https://www.djangoproject.com/>`_
 -  an **easy-to-use cache system**, optionally powered by Redis, via
    `aiocache <https://github.com/argaen/aiocache>`_ and
@@ -126,7 +126,7 @@ Core
 
 The central control unit that exposes all extensions and connects all
 the moving parts of the application. Inherits from
-```discord.ext.commands.Bot <https://discordpy.readthedocs.io/en/latest/ext/commands/api.html#discord.ext.commands.Bot>`_``.
+`discord.ext.commands.Bot <https://discordpy.readthedocs.io/en/latest/ext/commands/api.html#discord.ext.commands.Bot>`_.
 
 Extensions
 ~~~~~~~~~~
@@ -165,7 +165,7 @@ Event listeners
 
 Decorate a Cog's async method with ``hero.listener()`` to turn it into an event
 listener. Valid listener names and parameters can be looked up
-`here <https://discordpy.readthedocs.io/en/stable/api.html#event-reference>`__. 
+`here <https://discordpy.readthedocs.io/en/stable/api.html#event-reference>`_. 
 
 .. code-block:: python3
 
@@ -178,10 +178,11 @@ listener. Valid listener names and parameters can be looked up
 Controllers
 ~~~~~~~~~~~
 
-discord-hero encourages the Model-View-Controller pattern by
+Discord-Hero encourages the Model-View-Controller pattern by
 automatically adding an Extension's Controller to its Cogs.
 To make that happen, you just need to subclass ``hero.Controller``
-in your Extension's ``controller`` module.
+in your Extension's ``controller`` module. You can access the controller by 
+``self.ctl`` attribute.
 
 Models
 ~~~~~~
@@ -213,15 +214,6 @@ Settings
 
 Settings are a special type of Models, you can define one of these Model
 classes by subclassing ``hero.models.Settings``.
-
-GraphQL schemas
-~~~~~~~~~~~~~~~
-
-# TODO
-
-The GraphQL schemas generated automatically, you just need to configure
-your models accordingly. If you want to overwrite the default
-permissions, you can use the web interface. You can still add custom permissions.
 
 Usage
 -----
@@ -255,7 +247,16 @@ This is where your Models live.
 
 New in discord-hero are the following features available from inside a Cog:
 
-*await* ``self.db.load(discord_obj)``
+.. code-block:: python3
+
+   await self.db.wrap_user(user)
+   await self.db.wrap_member(member)
+   await self.db.wrap_guild(guild)
+   await self.db.wrap_emoji(emoji)
+   await self.db.wrap_message(message)
+   await self.db.wrap_text_channel(text_channel)
+   await self.db.wrap_voice_channel(voice_channel)
+   await self.db.wrap_category_channel(category_channel)
 
 Used to connect a given Discord object to the database and load data
 related to it that is stored in the database.
@@ -272,7 +273,7 @@ Example:
     @hero.command()
     @hero.guild_only()
     async def get_balance(self, ctx):
-        member = await self.db.load(ctx.author)
+        member = await self.db.wrap(ctx.author)
         await ctx.send(f"You have {member.balance} currency.")
 
 *Hero Models as parameters*
@@ -282,7 +283,6 @@ This will automatically parse the user input and pass a (loaded) instance
 of the Model to your command. Example: 
 
 .. code-block:: python3
-
 
     @hero.command()
     @hero.guild_only()
@@ -312,7 +312,7 @@ a ``hero.Controller`` subclass (you can only have one per Extension).
 ``self.settings```
 
 Your Extension's Settings. ``None`` if your Extension doesn't have
-a ``hero.Settings`` subclass (you can only have one per Extension).
+a ``hero.Settings`` subclass (you can only have one per Extension).emoji
 
 **Note:** You need at least one Cog for your extension to work.
 Alternatively, you can define a (non-async) function called ``setup``
@@ -324,7 +324,7 @@ it needs to pass each Cog instance to the Core's ``add_cog`` method.
 
 New in discord-hero are the following features regarding (Django) Models:
 
-*async*
+*Async Django Models*
 
 Django's ORM has been made to work well with asyncio with the help of asgiref.
 discord-hero introduces a decorator ``hero.async_using_db`` that turns a
