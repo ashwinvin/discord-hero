@@ -1,8 +1,7 @@
-discord-hero
-============
+Discord-Hero
+=============
 
-.. image:: https://liberapay.com/assets/widgets/donate.svg
-   :target: https://liberapay.com/monospacedmagic/donate
+**This repo is a fork of the original `discord-hero <https://github.com/discord-hero/discord-hero>`**
 
 discord-hero is an asynchronous, fully modular Discord bot framework that comes with
 batteries included, allowing you to write powerful `Discord <https://discordapp.com/>`_
@@ -25,8 +24,6 @@ applications for communities, games or companies on Discord:
 
 -  a **Discord bot** built on top of
    `discord.py <https://github.com/Rapptz/discord.py>`_
--  [TODO] a **Web API** powered by
-   `FastAPI <https://fastapi.tiangolo.com/>`_
 -  a **familiar asynchronous ORM** based on
    `Django <https://www.djangoproject.com/>`_
 -  an **easy-to-use cache system**, optionally powered by Redis, via
@@ -48,20 +45,22 @@ Requirements
 ~~~~~~~~~~~~
 
 You need `Python 3.7 or above <https://www.python.org/downloads/>`_,
-`Git <https://git-scm.com/downloads>`_, ``cookiecutter`` and ``pipenv``.
+`Git <https://git-scm.com/downloads>`_ and ``pipenv``.
 On Windows you may also need the
 `Visual C++ Build Tools <https://visualstudio.microsoft.com/visual-cpp-build-tools/>`_
 if you run into errors when trying to install discord-hero.
 Install ``cookiecutter`` and ``pipenv`` if you haven’t yet:
 
-Linux / Mac: ::
+Linux / Mac: 
 
-   python3 install --user -U cookiecutter
+.. code-block:: bash
+
    python3 install --user -U --pre pipenv
 
-Windows: ::
+Windows: 
 
-   py -3 -m pip install -U cookiecutter
+.. code-block:: bash
+
    py -3 -m pip install -U --pre pipenv
 
 If you’re just testing things out, it’s probably fine to just use the
@@ -70,7 +69,9 @@ However, if you want to use discord-hero for a production application,
 it is recommended to run it on a Linux VPS, dedicated
 server or something equally powerful, and use PostgreSQL for storing
 data and Redis for caching. To do the latter two changes, check your
-`.env` file and make the following changes: ::
+``.prodenv`` file and make the following changes:
+
+.. code-block:: bash
 
     export DB_TYPE=postgres
     export CACHE_TYPE=redis
@@ -85,24 +86,32 @@ Installation
 ~~~~~~~~~~~~
 
 Replace ``<your_directory_name>`` with the project name you will have
-entered by then. ::
+entered by then. 
+
+.. code-block:: bash
 
    cookiecutter https://github.com/monospacedmagic/discord-hero-cookiecutter.git
-   cd <your_directory_name>
+   cd your/directory/name
    pipenv install --three
 
-For production applications: ::
+For production applications: 
+
+.. code-block:: bash
 
    pipenv install discord-hero[postgresql,redis]
 
-Run discord-hero in test mode: ::
+Run discord-hero in test mode: 
 
-   cd <your_project_path>
+.. code-block:: bash
+
+   cd your/project/path
    pipenv run hero --test
 
-Run discord-hero in production mode: ::
+Run discord-hero in production mode: 
 
-   cd <your_project_path>
+.. code-block:: bash
+
+   cd your/project/path
    pipenv run hero --prod
 
 **Note:** You have the option to enter completely different configuration
@@ -140,7 +149,9 @@ Commands
 ~~~~~~~~
 
 Decorate a ``Cog``\ ’s coroutine method with ``hero.command(**options)``
-to create a ``Command``. ::
+to create a ``Command``. 
+
+.. code-block:: python3
 
    @hero.command()
    @hero.guild_only()  # A check ensuring that the command can only be invoked on a Discord server (Guild)
@@ -154,7 +165,9 @@ Event listeners
 
 Decorate a Cog's async method with ``hero.listener()`` to turn it into an event
 listener. Valid listener names and parameters can be looked up
-`here <https://discordpy.readthedocs.io/en/stable/api.html#event-reference>`__. ::
+`here <https://discordpy.readthedocs.io/en/stable/api.html#event-reference>`__. 
+
+.. code-block:: python3
 
    @hero.listener()
    async def on_message(self, message: discord.Message):
@@ -176,7 +189,9 @@ Models
 Structure your data by writing subclasses of ``hero.models.Model``. This will
 automatically set up your database schema when discord-hero launches or
 when the extension the cog belongs to is installed. If you’re coming
-from Django, you might already be familiar with the basic API. ::
+from Django, you might already be familiar with the basic API.
+
+.. code-block:: python3
 
    # Every Guild can have their own currency
    class Currency(models.Model):
@@ -229,7 +244,7 @@ see below.
 
 **cogs.\_\_init\_\_**
 
-Your Cogs can be anywhere inside the `cogs` package as long as you
+Your Cogs can be anywhere inside the ``cogs`` package as long as you
 import them here so discord-hero's Extension loader can find them.
 
 **models**
@@ -240,17 +255,19 @@ This is where your Models live.
 
 New in discord-hero are the following features available from inside a Cog:
 
-*await* `self.db.load(discord_obj)`
+*await* ``self.db.load(discord_obj)``
 
 Used to connect a given Discord object to the database and load data
 related to it that is stored in the database.
 
 - Returns: an instance of the hero Model that is associated to the class
-  the `discord_obj` is an instance of. This object wraps the Discord
+  the ``discord_obj`` is an instance of. This object wraps the Discord
   object and exposes all of its attributes and methods, which means
   it can be used like one as well.
 
-Example: ::
+Example: 
+
+.. code-block:: python3
 
     @hero.command()
     @hero.guild_only()
@@ -262,7 +279,10 @@ Example: ::
 
 You can define a discord-hero Model as a parameter type for a command.
 This will automatically parse the user input and pass a (loaded) instance
-of the Model to your command. Example: ::
+of the Model to your command. Example: 
+
+.. code-block:: python3
+
 
     @hero.command()
     @hero.guild_only()
@@ -277,19 +297,19 @@ and you can use groups introduced by other Extensions or discord-hero
 itself to create commands that are closer to natural language and
 thus more intuitive to use for the general audience.
 
-`self.cache`
+``self.cache``
 
-This is a `hero.Cache` instance that allows you to set or get
+This is a ``hero.Cache`` instance that allows you to set or get
 a given key into the database. There are more methods available
 to you than just get or set; for now, check out the source code
 for those.
 
-`self.ctl`
+``self.ctl``
 
 Your Extension's Controller. ``None`` if your Extension doesn't have
 a ``hero.Controller`` subclass (you can only have one per Extension).
 
-`self.settings`
+``self.settings```
 
 Your Extension's Settings. ``None`` if your Extension doesn't have
 a ``hero.Settings`` subclass (you can only have one per Extension).
