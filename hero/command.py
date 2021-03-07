@@ -44,6 +44,10 @@ def command(name=None, cls=None, **attrs):
 
 
 class Group(_Group):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
     async def invoke(self, ctx):
         ctx.invoked_subcommand = None
         early_invoke = not self.invoke_without_command

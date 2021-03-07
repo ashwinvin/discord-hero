@@ -51,9 +51,10 @@ class Cog(_discord_cog.Cog):
         # is essentially just the command loading, which raises if there are
         # duplicates. When this condition is met, we want to undo all what
         # we've added so far for some form of atomic loading.
+
         for index, command in enumerate(self.__cog_commands__):
             command.cog = self
-            if not isinstance(command, GroupMixin) or command.name not in core.all_commands:
+            if command.name not in core.all_commands:
                 try:
                     core.add_command(command)
                 except Exception as e:
@@ -61,7 +62,6 @@ class Cog(_discord_cog.Cog):
                     for to_undo in self.__cog_commands__[:index]:
                         core.remove_command(to_undo)
                     raise e
-
         # check if we're overriding the default
         if cls.bot_check is not Cog.bot_check:
             core.add_check(self.bot_check)
