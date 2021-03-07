@@ -2,7 +2,7 @@
 
 discord-hero: Discord Application Framework for humans
 
-:copyright: (c) 2019-2020 monospacedmagic et al.
+:copyright: (c) 2019-2020 monospacedmagic, ashwinvin.
 :license: Apache-2.0 OR MIT
 """
 

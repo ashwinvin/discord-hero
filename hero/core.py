@@ -64,13 +64,6 @@ class Core(commands.Bot):
             extension_names.remove('')
         self.sync_db(*extension_names, interactive=hero.TEST)
 
-        intents = discord.Intents.default()
-        if os.getenv('USE_MEMBERS_INTENT'):
-            intents.members = True
-
-        if os.getenv('USE_PRESENCE_INTENT'):
-            intents.presences = True
-        
         self.settings = settings
         if self.settings is None:
             from hero.models import CoreSettings
@@ -318,14 +311,19 @@ class Core(commands.Bot):
     def _remove_module_references(self, name):
         # find all references to the module
         # remove the cogs registered from the module
-        print("Name:", name)
         for cogname, cog in self.cogs.copy().items():
             if issubmodule(name, cog.__module__):
-                print(cogname)
                 self.remove_cog(cogname)
 
+        # Remove everything 
+        self.__controllers.pop(name.split(".")[1])
+        self.__extensions.pop(name.split(".")[1])
+        self.__settings.pop(name.split(".")[1])
+        #unload the imported stuff
+        sys.modules.pop(f"extensions.{name.split('.')[1]}.cogs")
+
         # remove all the commands from the module
-        for cmd in self.all_commands.copy().values():
+        for cmd in self.all_commands.values():
             if cmd.module is not None and issubmodule(name, cmd.module):
                 if isinstance(cmd, commands.GroupMixin):
                     print("Removing group:", cmd.name)
@@ -335,7 +333,7 @@ class Core(commands.Bot):
                     self.remove_command(cmd.name)
 
         # remove all the listeners from the module
-        for event_list in self.extra_events.copy().values():
+        for event_list in self.extra_events.values():
             remove = []
             for index, event in enumerate(event_list):
                 if event.__module__ is not None and issubmodule(name, event.__module__):
