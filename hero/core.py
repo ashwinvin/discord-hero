@@ -489,7 +489,7 @@ class Core(commands.Bot):
                 raise ResponseTookTooLong()
             else:
                 return None
-        return response.content
+        return response
 
     async def wait_for_confirmation(self, ctx_or_message, responding, timeout=60, force_response=True, use_reactions=True) -> bool:
         from hero import models
