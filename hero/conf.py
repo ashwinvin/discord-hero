@@ -1,6 +1,6 @@
 """discord-hero: Discord Application Framework for humans
 
-:copyright: (c) 2019-2020 monospacedmagic et al.
+:copyright: (c) 2019-2020 monospacedmagic, ashwinvin.
 :license: Apache-2.0 OR MIT
 """
 import importlib
@@ -254,7 +254,8 @@ class Config:
             'CACHE_PASSWORD': os.getenv('CACHE_PASSWORD', None),
             'CACHE_DB': os.getenv('CACHE_DB', 0),
             'USE_MEMBERS_INTENT': os.getenv('USE_MEMBERS_INTENT', False),
-            'USE_PRESENCE_INTENT': os.getenv('USE_PRESENCE_INTENT', False)
+            'USE_PRESENCE_INTENT': os.getenv('USE_PRESENCE_INTENT', False),
+            'FORCE_GDPR': os.getenv('FORCE_GDPR', True)
         }
         _config = {key: value for key, value in _config.items() if value is not None}
         return _config
