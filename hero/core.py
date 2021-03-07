@@ -10,6 +10,7 @@ import inspect
 import io
 import math
 import os
+from re import I, T
 import sys
 import traceback
 import types
@@ -767,9 +768,22 @@ class Core(commands.Bot):
             else:
                 await ctx.send(page)
 
-    @staticmethod
-    async def send_gdpr(user, author=None, fallback_channel=None,
+    async def send_gdpr(self, user, author=None, fallback_channel=None,
                         inactive=False, prefix=None, delete_after=None):
+                        
+        if not os.getenv("FORCE_GDPR", True):
+            from hero.models import User
+            try:
+                user = await self.db.wrap_user(user)
+                return
+            except UserDoesNotExist:
+                user = User(user.id)
+                await user.async_save()
+            except InactiveUser:
+                user = User(user.id)
+                user.is_active = True
+                await user.async_save()
+        
         register_message = None
         if author is None or author.id == user.id:
             if inactive:
