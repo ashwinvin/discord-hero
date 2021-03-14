@@ -4,5 +4,5 @@
 :license: Apache-2.0 OR MIT
 """
 
-from .cli import main_cli, create_extension, dummy_main
+from .cli import main_cli, dummy_main
 dummy_main()
